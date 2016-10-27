@@ -262,21 +262,21 @@ void CMesh::CreateRasterizerState( ID3D11Device *pd3dDevice, bool clockWise, D3D
 	pd3dDevice->CreateRasterizerState( &d3dRastersizerDesc, &m_pd3dRasterizerState );
 }
 
-AABB CMesh::GetBoundingBox( )const
+OOBB CMesh::GetBoundingBox()const
 {
 	return m_bcBoundingBox;
 }
 
-void CMesh::SetBoundingBox( XMFLOAT3& max, XMFLOAT3& min )
-{
-	m_bcBoundingBox.m_vMax = max;
-	m_bcBoundingBox.m_vMin = min;
-}
-
-void CMesh::SetBoundingBox( AABB& boundingBox )
-{
-	m_bcBoundingBox = boundingBox;
-}
+//void CMesh::SetBoundingBox( XMFLOAT3& max, XMFLOAT3& min )
+//{
+//	m_bcBoundingBox.m_vMax = max;
+//	m_bcBoundingBox.m_vMin = min;
+//}
+//
+//void CMesh::SetBoundingBox( AABB& boundingBox )
+//{
+//	m_bcBoundingBox = boundingBox;
+//}
 
 void CMesh::SetShader( CShader *pShader )
 {
@@ -462,7 +462,7 @@ CAnimateMesh::CAnimateMesh( ID3D11Device *pd3dDevice, std::vector<CAnimateVertex
 	m_AnimData = animData;
 	m_pmtxFinalTransforms = animData.mBoneOffsets;
 	m_fTimePos = 0.0f;
-	m_iAnimState = 1;
+	m_iAnimState = 0;
 
 	UINT nVertices = vertices.size();
 	m_svVertices = vertices;
@@ -575,17 +575,14 @@ std::vector<CAnimateVertex> CAnimateMesh::GetVertices( ) const
 
 void CAnimateMesh::Render( ID3D11DeviceContext *pd3dDeviceContext )
 {
-	// InpuLayout 세팅
-	pd3dDeviceContext->IASetInputLayout( m_pShader->GetInputLayout( ) );
-	// 상수버퍼 값 세팅
 	// 셰이더들 연결
 	if (m_pShader)
 	{
 		// InpuLayout 세팅
 		pd3dDeviceContext->IASetInputLayout(m_pShader->GetInputLayout());
-		// 상수버퍼 값 세팅
 		// 셰이더들 연결
 		m_pShader->SetShadersOnPipeline(pd3dDeviceContext);
+		// 상수버퍼 값 세팅
 		CAnimateShader::SetFinalTransformMatrix(pd3dDeviceContext, m_pmtxFinalTransforms);
 	}
 	// 정점 버퍼 세팅
@@ -615,10 +612,20 @@ void CAnimateMesh::Update(float fTimeElapsed)
 	m_fTimePos += fTimeElapsed;
 
 	if(m_bVisible)
-		m_AnimData.GetFinalTransforms(m_iAnimState, m_fTimePos, m_pmtxFinalTransforms);
+		m_AnimData.GetFinalTransforms(static_cast<int>(m_iAnimState), m_fTimePos, m_pmtxFinalTransforms);
 
-	if (m_fTimePos > m_AnimData.GetClipEndTime(m_iAnimState))
+	if (m_fTimePos > m_AnimData.GetClipEndTime(static_cast<int>(m_iAnimState)))
 		m_fTimePos = 0.0f;
+}
+
+void CAnimateMesh::SetAnimationState(ObjectState animState)
+{
+	m_iAnimState = animState;
+}
+
+ObjectState CAnimateMesh::GetAnimationState() const
+{
+	return m_iAnimState;
 }
 
 CSkyboxMesh::CSkyboxMesh( ID3D11Device *pd3dDevice, std::vector<CStaticVertex>& vertices, std::vector<UINT>& indices, D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,

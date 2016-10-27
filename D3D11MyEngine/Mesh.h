@@ -169,15 +169,15 @@ protected:
 	UINT m_nStartVertex;
 	UINT m_nBaseVertex;
 
-	// 컬링 등에 사용할 바운딩박스
-	AABB m_bcBoundingBox;
-
 	// 셰이더
 	CShader *m_pShader;
 	// 머테리얼
 	CMaterial *m_pMaterial;
 	
 	bool m_bVisible;
+
+	// 컬링 등에 사용할 바운딩박스
+	OOBB m_bcBoundingBox;
 public:
 	CMesh( std::string strName, ObjectLayer iLayer, ObjectType iType );
 	// 추상클래스로 만들어서 자식 클래스에서 재정의하여 사용해야만 함
@@ -194,10 +194,6 @@ public:
 	// 레스터라이저 상태객체 생성
 	virtual void CreateRasterizerState( ID3D11Device *pd3dDevice, bool clockWise = false, D3D11_CULL_MODE cullMode = D3D11_CULL_BACK, D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID);
 
-	AABB GetBoundingBox( ) const;
-	void SetBoundingBox( XMFLOAT3& max, XMFLOAT3& min );
-	void SetBoundingBox( AABB& boundingBox );
-
 	// 셰이더 관련
 	void SetShader( CShader *pShader );
 	CShader *GetShader( ) const;
@@ -208,6 +204,11 @@ public:
 
 	void SetIsVisible(bool visible);
 	bool GetIsVisible()const;
+
+	//
+	OOBB GetBoundingBox() const;
+	//	void SetBoundingBox( XMFLOAT3& max, XMFLOAT3& min );
+	//	void SetBoundingBox( AABB& boundingBox );
 };
 
 // 에니메이션이 없는 스태틱 메시
@@ -239,7 +240,7 @@ protected:
 	SkinnedData m_AnimData;
 	std::vector<XMFLOAT4X4> m_pmtxFinalTransforms;
 	float m_fTimePos;
-	int m_iAnimState;
+	ObjectState m_iAnimState;
 
 public:
 	CAnimateMesh( ID3D11Device *pd3dDevice, std::vector<CAnimateVertex>& vertices, std::vector<UINT>& indices, SkinnedData& animData, D3D11_PRIMITIVE_TOPOLOGY primitiveTopology,
@@ -249,6 +250,9 @@ public:
 	std::vector<CAnimateVertex> GetVertices( ) const;
 	virtual void Render( ID3D11DeviceContext *pd3dDeviceContext);
 	virtual void Update(float fTimeElapsed);
+
+	void SetAnimationState(ObjectState animState);
+	ObjectState GetAnimationState()const;
 };
 
 // 스카이박스 메시

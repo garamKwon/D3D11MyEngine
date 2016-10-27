@@ -87,8 +87,11 @@ public:
 	CMesh* GetMesh( std::string strName );
 	int GetMeshCount( ) const;
 
+	// ¿Ãµø
 	void Move( float fTimeElapsed, DWORD dwDirection );
 	void Move( XMVECTOR vShift );
+
+	bool CheckOOBBIntersect(CGameObject* pObject);
 };
 
 class CSkyboxObject : public CGameObject

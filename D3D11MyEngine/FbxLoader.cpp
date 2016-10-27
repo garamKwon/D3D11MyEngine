@@ -101,7 +101,7 @@ std::map<int, AnimationClip> FbxLoader::LoadBoneInfomation(FbxNode* pNode)
 
 	// 애니메이션클립을 찾는 행위
 	int numAnimations = m_pfbxScene->GetSrcObjectCount<FbxAnimStack>();
-	for (int animIndex = 1; animIndex < numAnimations; animIndex++)
+	for (int animIndex = 0; animIndex < numAnimations; animIndex++)
 	{
 		FbxAnimStack* animStack = m_pfbxScene->GetSrcObject<FbxAnimStack>(animIndex);
 		animName = animStack->GetName();	// 이름
@@ -203,6 +203,7 @@ void FbxLoader::GetInfluenceWeightAndBoneOffsets(FbxMesh *pMesh, std::vector<CAn
 	for (int deformerCount = 0; deformerCount < numDeformers; deformerCount++)
 	{
 		FbxSkin *skin = (FbxSkin*)pMesh->GetDeformer(deformerCount, FbxDeformer::eSkin);
+	
 		if (!skin)
 			continue;
 
@@ -269,71 +270,34 @@ void FbxLoader::GetInfluenceWeightAndBoneOffsets(FbxMesh *pMesh, std::vector<CAn
 			for (int i = 0; i < numBoneVertexIndices; i++)
 			{
 				float boneWeight = (float)boneVertexWeights[i];
+				int idx = boneVertexIndices[i];
+
 				// 가중치 중 x가 0이면 첫번째 인덱스
-				if ((*pVertices)[boneVertexIndices[i]].m_weights.x == 0)
+				if ((*pVertices)[idx].m_weights.x == 0)
 				{
-					(*pVertices)[boneVertexIndices[i]].m_weights.x = boneWeight;
-					(*pVertices)[boneVertexIndices[i]].m_boneIndices.x = (float)boneIdx;
+					(*pVertices)[idx].m_weights.x = boneWeight;
+					(*pVertices)[idx].m_boneIndices.x = (float)boneIdx;
 				}
 				// 가중치 중 x가 0이 아니고 y가 0이면 두번째 인덱스
 				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y == 0)
 				{
-					(*pVertices)[boneVertexIndices[i]].m_weights.y = boneWeight;
-					(*pVertices)[boneVertexIndices[i]].m_boneIndices.y = (float)boneIdx;
+					(*pVertices)[idx].m_weights.y = boneWeight;
+					(*pVertices)[idx].m_boneIndices.y = (float)boneIdx;
 				}
 				// 가중치 중 x가 0이 아니고 y가 0이 아니고 z가 0이면 세번째 인덱스
 				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.z == 0)
 				{
-					(*pVertices)[boneVertexIndices[i]].m_weights.z = boneWeight;
-					(*pVertices)[boneVertexIndices[i]].m_boneIndices.z = (float)boneIdx;
+					(*pVertices)[idx].m_weights.z = boneWeight;
+					(*pVertices)[idx].m_boneIndices.z = (float)boneIdx;
 				}
 				// 모두 0이 아니면 4번째 인덱스, 가중치는 1에서 xyz 빼면 나머지 구할 수 있음
 				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.z != 0)
 				{
-					(*pVertices)[boneVertexIndices[i]].m_boneIndices.w = (float)boneIdx;
+					(*pVertices)[idx].m_boneIndices.w = (float)boneIdx;
 				}
-
-
-				for (int boneVertexIndex = 0; boneVertexIndex < numBoneVertexIndices; boneVertexIndex++)
-				{
-					float tempBoneWeight = (float)boneVertexWeights[boneVertexIndex];	// 영향을 받는 정점의 가중치 정도
-
-																						// 가중치가 0이면 다음걸로 넘김
-					if (!tempBoneWeight)
-						continue;
-
-					int tempBoneVertexIndex = boneVertexIndices[boneVertexIndex];			// 영향을 받는 정점의 인덱스
-
-																							// 가중치 중 x가 0이면 첫번째 인덱스
-					if (pVertices->data()[tempBoneVertexIndex].m_weights.x == 0)
-					{
-						pVertices->data()[tempBoneVertexIndex].m_weights.x = tempBoneWeight;
-						pVertices->data()[tempBoneVertexIndex].m_boneIndices.x = boneIdx;
-					}
-					// 가중치 중 x가 0이 아니고 y가 0이면 두번째 인덱스
-					else if (pVertices->data()[tempBoneVertexIndex].m_weights.x != 0 && pVertices->data()[tempBoneVertexIndex].m_weights.y == 0)
-					{
-						pVertices->data()[tempBoneVertexIndex].m_weights.y = tempBoneWeight;
-						pVertices->data()[tempBoneVertexIndex].m_boneIndices.y = boneIdx;
-					}
-					// 가중치 중 x가 0이 아니고 y가 0이 아니고 z가 0이면 세번째 인덱스
-					else if (pVertices->data()[tempBoneVertexIndex].m_weights.x != 0 && pVertices->data()[tempBoneVertexIndex].m_weights.y != 0 && pVertices->data()[tempBoneVertexIndex].m_weights.z == 0)
-					{
-						pVertices->data()[tempBoneVertexIndex].m_weights.z = tempBoneWeight;
-						pVertices->data()[tempBoneVertexIndex].m_boneIndices.z = boneIdx;
-					}
-					// 모두 0이 아니면 4번째 인덱스, 가중치는 1에서 xyz 빼면 나머지 구할 수 있음
-					else if (pVertices->data()[tempBoneVertexIndex].m_weights.x != 0 && pVertices->data()[tempBoneVertexIndex].m_weights.y != 0 && pVertices->data()[tempBoneVertexIndex].m_weights.z != 0)
-					{
-						pVertices->data()[tempBoneVertexIndex].m_boneIndices.w = boneIdx;
-					}
-				}
-
-
 			}
 		}	// end of bonecount for
 	}
-}
 }
 
 void FbxLoader::GetBoneHierarachy(FbxNode *pNode, std::vector<Bone> *pBoneHierarchy)
@@ -408,9 +372,9 @@ void FbxLoader::GetVerticesAndIndices(FbxMesh* pMesh, std::vector<CAnimateVertex
 			vertex.m_position.y = (float)pVertices[cp_index].mData[1];
 			vertex.m_position.z = (float)pVertices[cp_index].mData[2];
 
-//			//---------------------------------------------------------
-//			// normal
-//			//---------------------------------------------------------
+			//---------------------------------------------------------
+			// normal
+			//---------------------------------------------------------
 			FbxGeometryElementNormal* leNormal = pMesh->GetElementNormal(0);
 			if (leNormal == nullptr)
 			{
@@ -459,7 +423,62 @@ void FbxLoader::GetVerticesAndIndices(FbxMesh* pMesh, std::vector<CAnimateVertex
 				vertex.m_normal.y = fbxNormal.mData[1];
 				vertex.m_normal.z = fbxNormal.mData[2];
 			}
-//
+
+			//---------------------------------------------------------
+			// uv
+			//---------------------------------------------------------
+			FbxGeometryElementUV* leUV = pMesh->GetElementUV(0);
+			if (leUV == nullptr)
+			{
+#ifdef __DEBUG_MODE__
+				std::cout << "Don't have UV info" << std::endl;
+#endif	
+			}
+			else
+			{
+				switch (leUV->GetMappingMode())
+				{
+					case FbxGeometryElement::eByControlPoint:
+					{
+						switch (leUV->GetReferenceMode())
+						{
+							case FbxGeometryElement::eDirect:
+								uv = leUV->GetDirectArray().GetAt(cp_index);
+								break;
+							case FbxGeometryElement::eIndexToDirect:
+							{
+								int id = leUV->GetIndexArray().GetAt(cp_index);
+								uv = leUV->GetDirectArray().GetAt(id);
+							}
+							break;
+							default:
+								break;
+						}
+					}
+					break;
+
+					case FbxGeometryElement::eByPolygonVertex:
+					{
+						int lTextureUVIndex = pMesh->GetTextureUVIndex(i, j);
+						switch (leUV->GetReferenceMode())
+						{
+							case FbxGeometryElement::eDirect:
+							case FbxGeometryElement::eIndexToDirect:
+							{
+								uv = leUV->GetDirectArray().GetAt(lTextureUVIndex);
+							}
+							break;
+							default:
+								break;
+						}
+					}
+					default:
+						break;
+				}
+				vertex.m_textureUV.x = (float)uv.mData[0];
+				vertex.m_textureUV.y = 1.0f - (float)uv.mData[1];
+			}
+
 //			//---------------------------------------------------------
 //			// tangent
 //			//---------------------------------------------------------
@@ -563,61 +582,6 @@ void FbxLoader::GetVerticesAndIndices(FbxMesh* pMesh, std::vector<CAnimateVertex
 //				vertex.m_binormal.y = fbxBinormal.mData[1];
 //				vertex.m_binormal.z = fbxBinormal.mData[2];
 //			}
-//
-			//---------------------------------------------------------
-			// uv
-			//---------------------------------------------------------
-			FbxGeometryElementUV* leUV = pMesh->GetElementUV(0);
-			if (leUV == nullptr)
-			{
-#ifdef __DEBUG_MODE__
-				std::cout << "Don't have UV info" << std::endl;
-#endif	
-			}
-			else
-			{
-				switch (leUV->GetMappingMode())
-				{
-					case FbxGeometryElement::eByControlPoint:
-					{
-						switch (leUV->GetReferenceMode())
-						{
-							case FbxGeometryElement::eDirect:
-								uv = leUV->GetDirectArray().GetAt(cp_index);
-								break;
-							case FbxGeometryElement::eIndexToDirect:
-							{
-								int id = leUV->GetIndexArray().GetAt(cp_index);
-								uv = leUV->GetDirectArray().GetAt(id);
-							}
-							break;
-							default:
-								break;
-						}
-					}
-					break;
-
-					case FbxGeometryElement::eByPolygonVertex:
-					{
-						int lTextureUVIndex = pMesh->GetTextureUVIndex(i, j);
-						switch (leUV->GetReferenceMode())
-						{
-							case FbxGeometryElement::eDirect:
-							case FbxGeometryElement::eIndexToDirect:
-							{
-								uv = leUV->GetDirectArray().GetAt(lTextureUVIndex);
-							}
-							break;
-							default:
-								break;
-						}
-					}
-					default:
-						break;
-				}
-				vertex.m_textureUV.x = (float)uv.mData[0];
-				vertex.m_textureUV.y = 1.0f - (float)uv.mData[1];
-			}
 			++vertexID;
 
 			(*pVertex)[cp_index] = vertex;

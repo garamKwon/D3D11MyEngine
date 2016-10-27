@@ -80,6 +80,7 @@ XMFLOAT3 CGameObject::GetUp( ) const
 	XMFLOAT3 vUp( m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23 );
 	XMVECTOR vTemp = XMLoadFloat3( &vUp );
 	XMVECTOR vNormalize = XMVector3Normalize( vTemp );
+	XMStoreFloat3(&vUp, vNormalize);
 
 	return vUp;
 }
@@ -89,6 +90,7 @@ XMFLOAT3 CGameObject::GetRight( ) const
 	XMFLOAT3 vRight( m_mtxWorld._11, m_mtxWorld._12, m_mtxWorld._13 );
 	XMVECTOR vTemp = XMLoadFloat3( &vRight );
 	XMVECTOR vNormalize = XMVector3Normalize( vTemp );
+	XMStoreFloat3(&vRight, vNormalize);
 
 	return vRight;
 }
@@ -135,10 +137,10 @@ int CGameObject::Render( ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 	{
 		if (m_vpMesh[i])
 		{
-			AABB bcBoundingCube = m_vpMesh[i]->GetBoundingBox( );
+			OOBB bcBoundingCube = m_vpMesh[i]->GetBoundingBox( );
 			bcBoundingCube.Update( &m_mtxWorld );
 
-			if (pCamera->IsInFrustum(&bcBoundingCube))	// 안보이면 안그림
+			if (pCamera->IsInFrustum(bcBoundingCube.GetMinVertex(), bcBoundingCube.GetMaxVertex()))	// 안보이면 안그림
 			{
 				m_vpMesh[i]->SetIsVisible(true);
 				m_vpMesh[i]->GetShader( )->SetVertexShaderContantBuffers( pd3dDeviceContext, &m_mtxWorld, pCamera );
@@ -304,6 +306,19 @@ void CGameObject::Move( XMVECTOR vShift )
 #ifdef __DEBUG_POS__
 	std::cout << "Object Postion : " << vPos.x << ", " << vPos.y << ", " << vPos.z << std::endl;
 #endif	
+}
+
+bool CGameObject::CheckOOBBIntersect(CGameObject* pObject)
+{
+	for (int i = 0; i < m_vpMesh.size(); i++)
+	{
+		for (int j = 0; j < pObject->GetMeshCount(); j++)
+		{
+			if (m_vpMesh[i]->GetBoundingBox().IsCollision(&pObject->GetMesh(j)->GetBoundingBox()))
+				return true;
+		}
+	}
+	return false;
 }
 
 CSkyboxObject::CSkyboxObject( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType ) : CGameObject( pd3dDevice, strName, iLayer, iType )

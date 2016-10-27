@@ -56,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //	CMesh* pZero = gMyEngine.MakeCube("ZeroAxis", 1, 1, 1);
 	CMesh* pSkyBox = gMyEngine.MakeSkybox("Skybox");
 	CMesh* pfbxMesh = gMyEngine.MakeStaticFbxMesh("fbx", "Box.FBX");
-	CMesh* pAnimateMesh = gMyEngine.MakeAnimateFbxMesh("Anim", "Hero_Sword_Animation.FBX");
+	CMesh* pAnimateMesh = gMyEngine.MakeAnimateFbxMesh("Anim", "Girl_Npc_Animation_mod.FBX");
 
 	//	gMyEngine.CreateObject( "Axis", ObjectLayer::LAYER_SCENE, pZero );
 	gMyEngine.CreateSkyboxObject("SkyBox", ObjectLayer::LAYER_SCENE, pSkyBox);

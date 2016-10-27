@@ -372,6 +372,6 @@ float4 SkinnedPS(SkinnedVertexOut input) : SV_Target
 	float4 cIllumination = Lighting(input.positionW, N);
 	float4 cColor = gtexDiffuse.Sample(gssDiffuse, input.uvTexCoord);
 
-	//return cIllumination * cColor;
-	return input.color;
+	return cIllumination * cColor;
+	//return input.color;
 }

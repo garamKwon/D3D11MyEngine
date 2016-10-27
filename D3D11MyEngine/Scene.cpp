@@ -300,7 +300,6 @@ void CScene::Update( float fTimeElapsed )
 	{
 #ifdef __DEBUG_MODE__
 		m_pController->Update( fTimeElapsed, m_pMainCamera );
-		//m_pController->Update( fTimeElapsed , m_vpObjects[0]);
 #else
 		m_pController->Update( fTimeElapsed, m_pPlayer );
 #endif
@@ -308,8 +307,21 @@ void CScene::Update( float fTimeElapsed )
 	for (int i = 0; i < m_vpCameras.size( ); i++)
 		m_vpCameras[i]->Update( fTimeElapsed );
 
-	for (int i = 0; i < m_vpObjects.size( ); i++)
-		m_vpObjects[i]->Update( fTimeElapsed );
+	for (int i = 0; i < m_vpObjects.size(); i++)
+	{
+		m_vpObjects[i]->Update(fTimeElapsed);
+	}
+	for (int i = 0; i < m_vpObjects.size(); i++)
+	{
+		// i+1을 시작위치로 하는 이유는 순차적으로 검사하기에 i 보다 적은 건 이미 체크했기 때문
+		for (int j = i+1; j < m_vpObjects.size(); j++)
+		{
+			if (m_vpObjects[i]->CheckOOBBIntersect(m_vpObjects[j]))
+			{
+				//충돌
+			}
+		}
+	}
 }
 
 void CScene::OnProcessingMouseMessage( HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam )
@@ -318,14 +330,9 @@ void CScene::OnProcessingMouseMessage( HWND hWnd, UINT nMessageID, WPARAM wParam
 	{
 		case WM_LBUTTONDOWN:
 			SetCapture( hWnd );
-	//		GetCursorPos( &m_ptOldCursorPos );
-	//		m_mousePos.x = LOWORD( lParam );
-	//		m_mousePos.y = HIWORD( lParam );
 			break;
 		case WM_RBUTTONDOWN:
 			SetCapture( hWnd );
-	//		GetCursorPos( &m_ptOldCursorPos );
-			//			Picking( LOWORD( lParam ), HIWORD( lParam ) );
 			break;
 		case WM_LBUTTONUP:
 		case WM_RBUTTONUP:
