@@ -6,6 +6,7 @@ class SceneManager
 {
 	std::vector<CScene*>  m_vScenes;
 	CScene* m_currentScene;		// 매 렌더링마다 현재 씬을 찾는 일을 하지 않기 위해 따로 지정
+	CCamera* m_pDebugCamera;
 
 public:
 	SceneManager( );
@@ -27,4 +28,8 @@ public:
 
 	void RenderScene( ID3D11DeviceContext *pd3dDeviceContext );
 	void UpdateScene( float fTimeElapsed );
+
+	void SetDebugCamera(CCamera* pCam);
+	CCamera* GetDebugCamera() const;
+
 };

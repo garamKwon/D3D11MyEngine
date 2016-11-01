@@ -8,7 +8,8 @@ class CCamera;
 
 enum class ObjectLayer{ LAYER_SCENE, LAYER_CONTROLLER };
 enum class ObjectType{ TYPE_DIRECTIONALLIGHT, TYPE_POINTLIGHT, TYPE_SPOTLIGHT, TYPE_STATIC_MESH, TYPE_ANIMATE_MESH,
-	TYPE_OBJECT, TYPE_TEXTURE, TYPE_MATERIAL, TYPE_SCENE, TYPE_CAMERA, TYPE_SKYBOX, TYPE_CONTROLLER  };
+	TYPE_OBJECT, TYPE_TEXTURE, TYPE_MATERIAL, TYPE_SCENE, TYPE_CAMERA, TYPE_SKYBOX, TYPE_CONTROLLER, TYPE_TRIGGER 
+};
 enum class ObjectState { STATE_IDLE, STATE_MOVE, STATE_DEATH, STATE_ATTACK, STATE_DAMAGED};
 
 // 엔진 내 시스템을 제외한 모든 클래스가 기본상속할 추상 클래스
@@ -19,11 +20,13 @@ protected:
 	ObjectType m_iType;
 	ObjectLayer m_iLayer;
 	std::string m_strName;
+	CBaseObject* m_pParentObject;
 
 public:
-	CBaseObject( );
 	CBaseObject( std::string strName, ObjectLayer iLayer, ObjectType iType )
-		: m_iType( iType ), m_iLayer( iLayer ), m_strName( strName ){ };
+		: m_iType(iType), m_iLayer(iLayer), m_strName(strName) {
+		m_pParentObject = nullptr;
+	};
 	virtual ~CBaseObject( ){};
 
 	void SetType( ObjectType type );
@@ -32,6 +35,9 @@ public:
 	ObjectType GetType( ) const;
 	ObjectLayer GetLayer( ) const;
 	std::string GetName( ) const;
+
+	void SetParentObject(CBaseObject* pObject);
+	CBaseObject* GetParentObject() const;
 };
 
 // 게임에서 기본적으로 사용되는 오브젝트, 기본적으로 움직임이 없는 고정형 객체
@@ -49,6 +55,8 @@ protected:
 
 	// 객체 속성
 	float m_fMoveSpeed;
+	// 머테리얼
+	CMaterial *m_pMaterial;
 
 public:
 	CGameObject( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType );
@@ -86,6 +94,10 @@ public:
 	CMesh* GetMesh( int idx );
 	CMesh* GetMesh( std::string strName );
 	int GetMeshCount( ) const;
+
+	// 머테리얼 관련
+	void SetMaterial(CMaterial *pMaterial);
+	CMaterial* GetMaterial() const;
 
 	// 이동
 	void Move( float fTimeElapsed, DWORD dwDirection );

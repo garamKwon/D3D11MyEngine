@@ -171,9 +171,7 @@ protected:
 
 	// 셰이더
 	CShader *m_pShader;
-	// 머테리얼
-	CMaterial *m_pMaterial;
-	
+
 	bool m_bVisible;
 
 	// 컬링 등에 사용할 바운딩박스
@@ -197,10 +195,6 @@ public:
 	// 셰이더 관련
 	void SetShader( CShader *pShader );
 	CShader *GetShader( ) const;
-
-	// 머테리얼 관련
-	void SetMaterial( CMaterial *pMaterial );
-	CMaterial* GetMaterial( ) const;
 
 	void SetIsVisible(bool visible);
 	bool GetIsVisible()const;

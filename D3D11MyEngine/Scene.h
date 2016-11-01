@@ -48,7 +48,8 @@ public:
 	std::vector<CLight *> GetLights( ) const;
 
 	void Render( ID3D11DeviceContext* pd3dDeviceContext );
-	void Update( float fTimeElapsed );
+	void DebugRender(ID3D11DeviceContext* pd3dDeviceContext, CCamera* pCamera);
+	void Update( float fTimeElapsed, CCamera* pCam);
 
 	void OnProcessingMouseMessage( HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam );
 	void OnProcessingKeyboardMessage( HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam );

@@ -21,13 +21,6 @@ public:
 	ID3D11ShaderResourceView* GetSRV( );
 	ID3D11SamplerState* GetSamplerState( );
 
-	static std::string TCHARToString( const TCHAR* ptsz )
-	{
-		int len = wcslen( (wchar_t*)ptsz );
-		char* psz = new char[2 * len + 1];
-		wcstombs( psz, (wchar_t*)ptsz, 2 * len + 1 );
-		std::string s = psz;
-		delete[ ] psz;
-		return s;
-	}
+	static CTexture* MakeTexture(ID3D11Device* pd3dDevice, TCHAR* strFileName, const char*  strObjectName);
+	static std::string TCHARToString(const TCHAR* ptsz);
 };

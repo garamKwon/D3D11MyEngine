@@ -294,23 +294,43 @@ void CScene::Render( ID3D11DeviceContext* pd3dDeviceContext )
 #endif
 }
 
-void CScene::Update( float fTimeElapsed )
+void CScene::DebugRender(ID3D11DeviceContext* pd3dDeviceContext, CCamera* pCamera)
 {
-	if (m_pController)
+	// 그려야하는 카메라 개수만큼 물체를 그림
+	if (m_pLights && m_pd3dcbLights)
+		SetcbLights(pd3dDeviceContext, pCamera);
+
+	pd3dDeviceContext->RSSetViewports(1, &pCamera->GetViewport());	// 뷰포트 세팅
+
+	for (int i = 0; i < m_vpObjects.size(); i++)
 	{
-#ifdef __DEBUG_MODE__
-		m_pController->Update( fTimeElapsed, m_pMainCamera );
-#else
-		m_pController->Update( fTimeElapsed, m_pPlayer );
-#endif
+		m_vpObjects[i]->Render(pd3dDeviceContext, pCamera);
 	}
-	for (int i = 0; i < m_vpCameras.size( ); i++)
-		m_vpCameras[i]->Update( fTimeElapsed );
+}
+
+void CScene::Update(float fTimeElapsed, CCamera* pCam)
+{
+	if (pCam)
+	{
+		if (m_pController)
+			m_pController->Update(fTimeElapsed, pCam);
+
+		pCam->Update(fTimeElapsed);
+	}
+	else
+	{
+		//if(m_pController)
+		//	m_pController->Update(fTimeElapsed, pPlayer);
+		for (int i = 0; i < m_vpCameras.size(); i++)
+			m_vpCameras[i]->Update(fTimeElapsed);
+	}
 
 	for (int i = 0; i < m_vpObjects.size(); i++)
 	{
 		m_vpObjects[i]->Update(fTimeElapsed);
 	}
+
+	// 충돌 검사
 	for (int i = 0; i < m_vpObjects.size(); i++)
 	{
 		// i+1을 시작위치로 하는 이유는 순차적으로 검사하기에 i 보다 적은 건 이미 체크했기 때문

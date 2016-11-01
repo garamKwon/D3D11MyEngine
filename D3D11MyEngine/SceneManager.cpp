@@ -5,6 +5,7 @@
 SceneManager::SceneManager( )
 {
 	m_currentScene = nullptr;
+	m_pDebugCamera = nullptr;
 }
 
 
@@ -161,8 +162,11 @@ void SceneManager::RenderScene( ID3D11DeviceContext* pd3dDeviceContext )
 		std::cout << "Number of Object : " << m_currentScene->GetGameObjects( ).size() << std::endl << std::endl;
 		m_currentScene->Render( pd3dDeviceContext );
 		std::cout << "Render End" << std::endl<<std::endl;
-#else	
-		m_currentScene->Render( pd3dDeviceContext );	
+#endif
+#ifdef __DEBUG_MODE__
+		m_currentScene->DebugRender(pd3dDeviceContext, m_pDebugCamera);
+#else
+		m_currentScene->Render(pd3dDeviceContext);
 #endif	
 	}
 }
@@ -171,5 +175,27 @@ void SceneManager::RenderScene( ID3D11DeviceContext* pd3dDeviceContext )
 void SceneManager::UpdateScene( float fTimeElapsed )
 {
 	if (m_currentScene)
-		m_currentScene->Update( fTimeElapsed );
+	{
+#ifdef __DEBUG_MODE__
+		m_currentScene->Update(fTimeElapsed, m_pDebugCamera);
+#else
+		m_currentScene->Update(fTimeElapsed, nullptr);
+#endif	
+	}
+}
+
+void SceneManager::SetDebugCamera(CCamera* pCam)
+{
+	if (m_pDebugCamera)
+		SAFE_DELETE(m_pDebugCamera);
+
+	m_pDebugCamera = pCam;
+}
+
+CCamera* SceneManager::GetDebugCamera() const
+{
+	if (m_pDebugCamera)
+		return m_pDebugCamera;
+
+	return nullptr;
 }

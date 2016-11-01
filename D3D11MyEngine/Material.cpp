@@ -158,6 +158,77 @@ CTexture* CMaterial::GetTexture( int iIndex ) const
 	return m_ppTextures[iIndex];
 }
 
+CTexture* CMaterial::GetTexture(std::string strName) const
+{
+	for (int i = 0; i < m_nTextureCount; i++)
+	{
+		if (m_ppTextures[i]->GetName() == strName)
+			return m_ppTextures[i];
+	}
+}
+
+CTexture* CMaterial::ChangeTexture(int srcTexIdx, CTexture* dstTexture)
+{
+	CTexture* temp = GetTexture(srcTexIdx);
+	if (temp)
+	{
+		m_ppTextures[srcTexIdx] = dstTexture;
+		return temp;
+	}
+
+#ifdef __DEBUG_MODE__
+	std::cout << "Fail to Change Texture" << std::endl;
+#endif	
+	return nullptr;
+}
+
+CTexture* CMaterial::ChangeTexture(std::string& strName, CTexture* dstTexture)
+{
+	CTexture* temp = GetTexture(strName);
+	if (temp)
+	{
+		for (int i = 0; i < m_nTextureCount; i++)
+		{
+			if (m_ppTextures[i]->GetName() == strName)
+			{
+				m_ppTextures[i] = dstTexture;
+				return temp;
+			}
+		}
+	}
+
+#ifdef __DEBUG_MODE__
+	std::cout << "Fail to Change Texture" << std::endl;
+#endif	
+	return nullptr;
+}
+
+CTexture* CMaterial::ChangeTexture(ID3D11Device* pd3dDevice,  std::string& strDstName, TCHAR* strFileName, std::string& strSrcName)
+{
+	CTexture* temp = GetTexture(strSrcName);
+	if (temp)
+	{
+		CTexture* tex = new CTexture(pd3dDevice, strFileName, strDstName, ObjectLayer::LAYER_SCENE);
+
+		for (int i = 0; i < m_nTextureCount; i++)
+		{
+			if (m_ppTextures[i]->GetName() == strSrcName)
+			{
+				m_ppTextures[i] = tex;
+				return temp;
+			}
+		}
+	}
+	else
+	{
+#ifdef __DEBUG_MODE__
+		std::cout << "Fail to Change Texture" << std::endl;
+#endif	
+		return nullptr;
+	}
+	return nullptr;
+}
+
 void CMaterial::SetMaterial( MATERIAL& mat )
 {
 	m_Material = mat;

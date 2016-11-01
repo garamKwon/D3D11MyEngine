@@ -292,16 +292,6 @@ CShader* CMesh::GetShader( ) const
 		return m_pShader;
 }
 
-void CMesh::SetMaterial( CMaterial *pMaterial )
-{
-	m_pMaterial = pMaterial;
-}
-
-CMaterial* CMesh::GetMaterial( ) const
-{
-	return m_pMaterial;
-}
-
 void CMesh::SetIsVisible(bool visible)
 {
 	m_bVisible = visible;
@@ -389,13 +379,6 @@ CStaticMesh::CStaticMesh( ID3D11Device *pd3dDevice, std::vector<CAnimateVertex>&
 	d3dBufferData.pSysMem = &m_svIndices[0];
 	pd3dDevice->CreateBuffer( &d3dBufferDesc, &d3dBufferData, &m_pd3dIndexBuffer );
 
-	std::vector<CTexture*> textures;
-
-	CTexture* tex = new CTexture( pd3dDevice, L"baseTexture.png", "DiffuseTexture", ObjectLayer::LAYER_SCENE );
-	textures.push_back( tex );
-
-	m_pMaterial = new CMaterial( pd3dDevice, textures );
-
 	CreateRasterizerState( pd3dDevice );
 
 	m_pShader = new CStaticShader( pd3dDevice );
@@ -438,12 +421,6 @@ void CStaticMesh::Render( ID3D11DeviceContext *pd3dDeviceContext )
 	pd3dDeviceContext->IASetPrimitiveTopology( m_d3dPrimitiveTopology );
 	// 레스터라이저 상태 객체 세팅
 	pd3dDeviceContext->RSSetState( m_pd3dRasterizerState );
-	// 머테리얼 세팅
-	if (m_pMaterial)
-	{
-		m_pMaterial->SetcbMaterial( pd3dDeviceContext );
-		m_pMaterial->SetTextureOnShader( pd3dDeviceContext );
-	}
 
 	if (m_pd3dIndexBuffer)
 		pd3dDeviceContext->DrawIndexed( m_svIndices.size( ), m_nStartIndex, m_nBaseVertex );
@@ -462,7 +439,7 @@ CAnimateMesh::CAnimateMesh( ID3D11Device *pd3dDevice, std::vector<CAnimateVertex
 	m_AnimData = animData;
 	m_pmtxFinalTransforms = animData.mBoneOffsets;
 	m_fTimePos = 0.0f;
-	m_iAnimState = 0;
+	m_iAnimState = ObjectState::STATE_IDLE;
 
 	UINT nVertices = vertices.size();
 	m_svVertices = vertices;
@@ -541,13 +518,6 @@ CAnimateMesh::CAnimateMesh( ID3D11Device *pd3dDevice, std::vector<CAnimateVertex
 	d3dBufferData.pSysMem = &m_svIndices[0];
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dIndexBuffer);
 
-	std::vector<CTexture*> textures;
-
-	CTexture* tex = new CTexture(pd3dDevice, L"baseTexture.png", "DiffuseTexture", ObjectLayer::LAYER_SCENE);
-	textures.push_back(tex);
-
-	m_pMaterial = new CMaterial(pd3dDevice, textures);
-
 	CreateRasterizerState(pd3dDevice);
 
 	m_pShader = new CAnimateShader(pd3dDevice);
@@ -593,13 +563,6 @@ void CAnimateMesh::Render( ID3D11DeviceContext *pd3dDeviceContext )
 	pd3dDeviceContext->IASetPrimitiveTopology( m_d3dPrimitiveTopology );
 	// 레스터라이저 상태 객체 세팅
 	pd3dDeviceContext->RSSetState( m_pd3dRasterizerState );
-
-	// 머테리얼 세팅
-	if (m_pMaterial)
-	{
-		m_pMaterial->SetcbMaterial(pd3dDeviceContext);
-		m_pMaterial->SetTextureOnShader(pd3dDeviceContext);
-	}
 
 	if (m_pd3dIndexBuffer)
 		pd3dDeviceContext->DrawIndexed( m_svIndices.size( ), m_nStartIndex, m_nBaseVertex );
@@ -676,23 +639,6 @@ CSkyboxMesh::CSkyboxMesh( ID3D11Device *pd3dDevice, std::vector<CStaticVertex>& 
 	d3dBufferData.pSysMem = &m_svIndices[0];
 	pd3dDevice->CreateBuffer( &d3dBufferDesc, &d3dBufferData, &m_pd3dIndexBuffer );
 
-	std::vector<CTexture*> textures;
-
-	CTexture *up = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Top_1.jpg", "UpTexture", ObjectLayer::LAYER_SCENE );
-	CTexture *down = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Bottom_1.jpg", "DownTexture", ObjectLayer::LAYER_SCENE );
-	CTexture *left = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Left_1.jpg", "LeftTexture", ObjectLayer::LAYER_SCENE );
-	CTexture *right = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Right_1.jpg", "RightTexture", ObjectLayer::LAYER_SCENE );
-	CTexture *forward = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Front_1.jpg", "ForwardTexture", ObjectLayer::LAYER_SCENE );
-	CTexture *backward = new CTexture( pd3dDevice, L"res/skybox/SkyBox_Back_1.jpg", "BackwardTexture", ObjectLayer::LAYER_SCENE );
-	textures.push_back( forward );
-	textures.push_back( backward );
-	textures.push_back( left );
-	textures.push_back( right );
-	textures.push_back( up );
-	textures.push_back( down );
-
-	m_pMaterial = new CMaterial( pd3dDevice, textures );
-
 	D3D11_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
 	::ZeroMemory( &d3dDepthStencilDesc, sizeof( D3D11_DEPTH_STENCIL_DESC ) );
 	// 스카이 박스 사각형들은 깊이 버퍼 알고리즘을 적용하지 않고 깊이 버퍼를 변경하지 않음
@@ -759,10 +705,10 @@ void CSkyboxMesh::Render( ID3D11DeviceContext *pd3dDeviceContext )
 
 	for (int i = 0; i < 6; i++)
 	{
-		if (m_pMaterial)
+		if (((CGameObject*)GetParentObject())->GetMaterial())
 		{
-			m_pMaterial->SetcbMaterial( pd3dDeviceContext );
-			m_pMaterial->SetTextureOnShader( pd3dDeviceContext, i , 0);
+			((CGameObject*)GetParentObject())->GetMaterial()->SetcbMaterial( pd3dDeviceContext );
+			((CGameObject*)GetParentObject())->GetMaterial()->SetTextureOnShader( pd3dDeviceContext, i , 0);
 		}
 		pd3dDeviceContext->DrawIndexed( 4, 0, i * 4 );
 	}

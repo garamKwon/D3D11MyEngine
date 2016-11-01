@@ -50,3 +50,20 @@ ID3D11SamplerState* CTexture::GetSamplerState( )
 {
 	return m_pd3dSamplerStates;
 }
+
+
+CTexture* CTexture::MakeTexture(ID3D11Device* pd3dDevice, TCHAR* strFileName, const char* strObjectName)
+{
+	CTexture* tex = new CTexture(pd3dDevice, strFileName, strObjectName, ObjectLayer::LAYER_SCENE);
+	return tex;
+}
+
+std::string CTexture::TCHARToString(const TCHAR* ptsz)
+{
+	int len = wcslen((wchar_t*)ptsz);
+	char* psz = new char[2 * len + 1];
+	wcstombs(psz, (wchar_t*)ptsz, 2 * len + 1);
+	std::string s = psz;
+	delete[] psz;
+	return s;
+}

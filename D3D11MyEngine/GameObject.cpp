@@ -36,6 +36,16 @@ std::string CBaseObject::GetName( ) const
 	return m_strName;
 }
 
+void CBaseObject::SetParentObject(CBaseObject* pObject)
+{
+	m_pParentObject = pObject;	
+}
+
+CBaseObject* CBaseObject::GetParentObject() const
+{
+	return m_pParentObject;
+}
+
 CGameObject::CGameObject( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType ) : CBaseObject( strName, iLayer, iType )
 {
 	m_vpMesh.resize( 0 );
@@ -50,13 +60,14 @@ CGameObject::CGameObject( ID3D11Device* pd3dDevice, std::string strName, ObjectL
 
 	XMStoreFloat4x4( &m_mtxWorld, XMMatrixIdentity( ) );
 
-	//XMFLOAT4X4 trans = XMFLOAT4X4(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
-	//XMMATRIX mtx = XMLoadFloat4x4(&m_mtxWorld);
-	//XMMATRIX transMtx = XMLoadFloat4x4(&trans);
-	//XMMatrixMultiply(mtx, transMtx);
-	//XMStoreFloat4x4(&m_mtxWorld, mtx);
-
 	m_fMoveSpeed = 100.0f;
+
+	std::vector<CTexture*> textures;
+
+	CTexture* tex = new CTexture(pd3dDevice, L"baseTexture.png", "DiffuseTexture", ObjectLayer::LAYER_SCENE);
+	textures.push_back(tex);
+
+	m_pMaterial = new CMaterial(pd3dDevice, textures);
 }
 
 
@@ -111,11 +122,13 @@ void CGameObject::SetPosition( float x, float y, float z )
 	m_mtxWorld._42 = y;
 	m_mtxWorld._43 = z;
 }
+
 void CGameObject::Update( float fTimeElapsed )
 {
 	for (int i = 0; i < m_vpMesh.size(); i++)
 	{
 		m_vpMesh[i]->Update(fTimeElapsed);
+		m_vpMesh[i]->GetBoundingBox().Update(&m_mtxWorld);
 	}
 }
 
@@ -142,6 +155,12 @@ int CGameObject::Render( ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamer
 
 			if (pCamera->IsInFrustum(bcBoundingCube.GetMinVertex(), bcBoundingCube.GetMaxVertex()))	// 안보이면 안그림
 			{
+				// 머테리얼 세팅
+				if (m_pMaterial)
+				{
+					m_pMaterial->SetcbMaterial(pd3dDeviceContext);
+					m_pMaterial->SetTextureOnShader(pd3dDeviceContext);
+				}
 				m_vpMesh[i]->SetIsVisible(true);
 				m_vpMesh[i]->GetShader( )->SetVertexShaderContantBuffers( pd3dDeviceContext, &m_mtxWorld, pCamera );
 				m_vpMesh[i]->Render( pd3dDeviceContext );
@@ -227,12 +246,14 @@ void CGameObject::SetMesh( int idx, CMesh* pMesh )
 	{
 		SAFE_DELETE( m_vpMesh[idx] );
 		m_vpMesh[idx] = pMesh;
+		m_vpMesh[idx]->SetParentObject(this);
 	}
 }
 
 void CGameObject::SetMesh( CMesh* pMesh )
 {
 	m_vpMesh.push_back( pMesh );
+	pMesh->SetParentObject(this);
 	m_nMeshCount++;
 }
 
@@ -254,6 +275,16 @@ CMesh* CGameObject::GetMesh( std::string strName )
 int CGameObject::GetMeshCount( ) const
 {
 	return m_nMeshCount;
+}
+
+void CGameObject::SetMaterial(CMaterial *pMaterial)
+{
+	m_pMaterial = pMaterial;
+}
+
+CMaterial* CGameObject::GetMaterial() const
+{
+	return m_pMaterial;
 }
 
 void CGameObject::Move( float fTimeElapsed, DWORD dwDirection )
@@ -323,7 +354,22 @@ bool CGameObject::CheckOOBBIntersect(CGameObject* pObject)
 
 CSkyboxObject::CSkyboxObject( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType ) : CGameObject( pd3dDevice, strName, iLayer, iType )
 {
+	std::vector<CTexture*> textures;
 
+	CTexture *up = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Top_1.jpg", "UpTexture", ObjectLayer::LAYER_SCENE);
+	CTexture *down = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Bottom_1.jpg", "DownTexture", ObjectLayer::LAYER_SCENE);
+	CTexture *left = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Left_1.jpg", "LeftTexture", ObjectLayer::LAYER_SCENE);
+	CTexture *right = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Right_1.jpg", "RightTexture", ObjectLayer::LAYER_SCENE);
+	CTexture *forward = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Front_1.jpg", "ForwardTexture", ObjectLayer::LAYER_SCENE);
+	CTexture *backward = new CTexture(pd3dDevice, L"res/skybox/SkyBox_Back_1.jpg", "BackwardTexture", ObjectLayer::LAYER_SCENE);
+	textures.push_back(forward);
+	textures.push_back(backward);
+	textures.push_back(left);
+	textures.push_back(right);
+	textures.push_back(up);
+	textures.push_back(down);
+
+	m_pMaterial = new CMaterial(pd3dDevice, textures);
 }
 
 CSkyboxObject::~CSkyboxObject( )

@@ -48,7 +48,7 @@ void AABB::Update( XMFLOAT4X4 *pmtxTransform )
 	}
 }
 
-OOBB::OOBB() : CBaseObject()
+OOBB::OOBB() : CBaseObject( "OOBB", ObjectLayer::LAYER_SCENE, ObjectType::TYPE_TRIGGER)
 {
 	m_vCenter = XMFLOAT3(0, 0, 0);
 	m_vExtent = XMFLOAT3(+FLT_MAX, +FLT_MAX, +FLT_MAX);
@@ -132,13 +132,13 @@ void OOBB::Update(XMFLOAT4X4 *pmtxTransform)
 	XMStoreFloat3(&m_pvAxis[0], vNormalize);
 
 	XMFLOAT3 vUp(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
-	XMVECTOR vTemp = XMLoadFloat3(&vUp);
-	XMVECTOR vNormalize = XMVector3Normalize(vTemp);
+	vTemp = XMLoadFloat3(&vUp);
+	vNormalize = XMVector3Normalize(vTemp);
 	XMStoreFloat3(&m_pvAxis[1], vNormalize);
 
 	XMFLOAT3 vLookAt(m_mtxWorld._31, m_mtxWorld._32, m_mtxWorld._33);
-	XMVECTOR vTemp = XMLoadFloat3(&vLookAt);
-	XMVECTOR vNormalize = XMVector3Normalize(vTemp);
+	vTemp = XMLoadFloat3(&vLookAt);
+	vNormalize = XMVector3Normalize(vTemp);
 	XMStoreFloat3(&m_pvAxis[2], vNormalize);
 
 	// 센터 위치 변환

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "D3DEngine.h"
+#include "Material.h"
 
 
 D3DEngine::D3DEngine( )
@@ -109,8 +110,9 @@ CCamera* D3DEngine::CreateCamera( std::string strName, ObjectLayer iLayer, XMFLO
 	CCamera* camera = new CCamera( m_pD3DLib->GetDeviceContext( ), strName, iLayer, ObjectType::TYPE_CAMERA, vPosition, vLook, vRight, vUp, vOffset, objLook,
 		xStart, yStart, m_nFrameBufferWidth, m_nFrameBufferHeight, fMinZ, fMaxZ, fNearPlaneDist, fFarPlaneDist, (float)m_nFrameBufferWidth / (float)m_nFrameBufferHeight, fFOVAngle );
 
-	curScene->AddCamera( camera );
-
+	if(m_pSceneManager->GetDebugCamera())
+		curScene->AddCamera( camera );
+	
 	return camera;
 }
 
@@ -119,6 +121,7 @@ CGameObject* D3DEngine::CreateObject( std::string strName, ObjectLayer iLayer, C
 	CGameObject* obj = new CGameObject( m_pD3DLib->GetDevice( ), strName, iLayer, iType );
 	obj->SetPosition( vPosition );
 	obj->SetMesh( pMesh );
+	pMesh->SetParentObject(obj);
 
 	CScene* curScene = m_pSceneManager->GetCurrentScene( );
 	curScene->AddObject( obj );
@@ -129,6 +132,7 @@ CSkyboxObject* D3DEngine::CreateSkyboxObject( std::string strName, ObjectLayer i
 {
 	CSkyboxObject* obj = new CSkyboxObject( m_pD3DLib->GetDevice( ), strName, iLayer, iType );
 	obj->SetMesh( pMesh );
+	pMesh->SetParentObject(obj);
 
 	CScene* curScene = m_pSceneManager->GetCurrentScene( );
 	curScene->AddObject( obj );
@@ -139,6 +143,11 @@ CSkyboxObject* D3DEngine::CreateSkyboxObject( std::string strName, ObjectLayer i
 void D3DEngine::CameraLookAtObject( std::string strCamName, std::string strObjName )
 {
 	m_pSceneManager->GetCurrentScene( )->CameraLookAtObject( strCamName, strObjName );
+}
+
+void D3DEngine::SetDebugCamera(CCamera* pCam)
+{
+	m_pSceneManager->SetDebugCamera(pCam);
 }
 
 CGameObject* D3DEngine::GetGameObject( std::string strName )const
@@ -257,4 +266,9 @@ CStaticMesh* D3DEngine::MakeStaticFbxMesh(std::string strName, const char* strFb
 CAnimateMesh* D3DEngine::MakeAnimateFbxMesh(std::string strName, const char* strFbxFileName)
 {
 	return m_pGeometryMaker->MakeAnimateMeshByFbx(m_pD3DLib->GetDevice(), m_pFbxLoader, strName, strFbxFileName);
+}
+
+CTexture* D3DEngine::ChangeTexture(std::string strObjName, TCHAR* strFileName, std::string strTexName, std::string strSrcName)
+{
+	return m_pSceneManager->GetCurrentScene()->GetGameObject(strObjName)->GetMaterial()->ChangeTexture(m_pD3DLib->GetDevice(), strTexName, strFileName, strSrcName);
 }

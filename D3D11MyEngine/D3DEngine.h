@@ -66,6 +66,7 @@ public:
 	std::vector<CScene*> GetScenes( ) const;
 
 	void CameraLookAtObject( std::string strCamName, std::string strObjName );
+	void SetDebugCamera(CCamera* pCam);
 
 	// 윈도우 관련
 	void OnProcessingMouseMessage( HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam );
@@ -84,6 +85,8 @@ public:
 	CStaticMesh* MakeStaticFbxMesh(std::string strName, const char* strFbxFileName);
 	CAnimateMesh* MakeAnimateFbxMesh(std::string strName, const char* strFbxFileName);
 
+	// 머테리얼 관련
+	CTexture* ChangeTexture(std::string strObjName, TCHAR* strFileName, std::string strTexName, std::string strSrcName = "DiffuseTexture");
 public:
 
 };

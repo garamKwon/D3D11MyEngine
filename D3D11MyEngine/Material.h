@@ -40,6 +40,12 @@ public:
 	void setTexture( int iIndex, CTexture* pTexture );
 	std::vector<CTexture*> GetTextures( ) const;
 	CTexture* GetTexture( int iIndex ) const;
+	CTexture* GetTexture(std::string strName) const;
+
+	// 원래 있던 텍스처 반환
+	CTexture* ChangeTexture(int srcTexIdx, CTexture* dstTexture);
+	CTexture* ChangeTexture(std::string& strName, CTexture* dstTexture);
+	CTexture* ChangeTexture(ID3D11Device* pd3dDevice, std::string& strDstName, TCHAR* strFileName, std::string& strSrcName);
 
 	void SetMaterial( MATERIAL& mat );
 	void SetSpecular( XMFLOAT4& vSpecular );

@@ -290,11 +290,13 @@ VS_OUTPUT VSmain( VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	output.positionW = mul( input.positionL, ( float3x3 )gmtxWorld );
+	output.positionW = mul(float4(input.positionL, 1.0f), gmtxWorld).xyz;
 	output.positionH = mul( mul( float4( output.positionW, 1.0f ), gmtxView ), gmtxProjection );
 	output.normalW = mul( input.normalL, ( float3x3 )gmtxWorld );
 	output.tangentW = mul( input.tangentL, ( float3x3 )gmtxWorld );
 	output.binormalW = mul( input.binormalL, ( float3x3 )gmtxWorld );
+
+	output.uvTexCoord = input.uvTexCoord;
 
 	return (output);
 }
@@ -330,28 +332,15 @@ SkinnedVertexOut SkinnedVS(SkinnedVertexIn vin)
 	vout.color.z = 0.0;
 	vout.color.w = 1.0;
 
-	if (vin.boneIndices[0] == 7 && vin.boneIndices[1] == 0)
-		vout.color.x = 255.0;
-
-	if (vin.boneIndices[0] == 7 && vin.boneIndices[1] == 6)
-		vout.color.y = 255.0;
-
-	if (vin.boneIndices[0] == 7 && vin.boneIndices[1] == 20)
-		vout.color.z = 255.0;
-
-	if (weights[0] == 0)
-		posL = vin.positionL;
-	else {
-		for (int i = 0; i < 4; ++i)
-		{
-			posL += weights[i] * mul(float4(vin.positionL, 1.0f), gBoneTransforms[vin.boneIndices[i]]).xyz;
-			normalL += weights[i] * mul(vin.normalL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
-			tangentL += weights[i] * mul(vin.tangentL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
-			binormalL += weights[i] * mul(vin.binormalL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
+	for (int i = 0; i < 4; ++i)
+	{
+		posL += weights[i] * mul(float4(vin.positionL, 1.0f), gBoneTransforms[vin.boneIndices[i]]).xyz;
+		normalL += weights[i] * mul(vin.normalL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
+		tangentL += weights[i] * mul(vin.tangentL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
+		binormalL += weights[i] * mul(vin.binormalL, (float3x3)gBoneTransforms[vin.boneIndices[i]]);
 		}
-	}
+
 	vout.positionW = mul(float4(posL, 1.0f), gmtxWorld).xyz;
-//	vout.normalW = mul(float4(normalL, 1.0f), gmtxWorld).xyz;
 	vout.normalW = float4(mul(normalL, (float3x3)gmtxWorld), 0.0f);
 	vout.tangentW = float4(mul(tangentL, (float3x3)gmtxWorld), 0.0f);
 	vout.binormalW = float4(mul(binormalL, (float3x3)gmtxWorld), 0.0f);
