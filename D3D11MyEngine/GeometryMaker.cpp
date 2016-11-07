@@ -64,6 +64,35 @@ CStaticMesh* GeometryMaker::MakeCube( ID3D11Device* pd3dDevice, std::string strN
 	return Cube;
 }
 
+CStaticMesh* GeometryMaker::MakeQuad(ID3D11Device* pd3dDevice, std::string strName, float fWidth, float fHeight)
+{
+	std::vector<CAnimateVertex> vertices;
+	float fx = fWidth, fy = fHeight;
+
+	vertices.resize(4);
+	vertices[0].m_position = XMFLOAT3(-fx, +fy, 0);
+	vertices[0].m_textureUV = XMFLOAT2(0, 0);
+	vertices[1].m_position = XMFLOAT3(+fx, +fy, 0);
+	vertices[1].m_textureUV = XMFLOAT2(1, 0);
+	vertices[2].m_position = XMFLOAT3(+fx, -fy, 0);
+	vertices[2].m_textureUV = XMFLOAT2(1, 1);
+	vertices[3].m_position = XMFLOAT3(-fx, -fy, 0);
+	vertices[3].m_textureUV = XMFLOAT2(0, 1);
+
+	std::vector<UINT> indices;
+	indices.resize(6);
+
+	indices[0] = 0;
+	indices[1] = 1;
+	indices[2] = 2;
+	indices[3] = 2;
+	indices[4] = 3;
+	indices[5] = 0;
+
+	CStaticMesh* Quad = new CStaticMesh(pd3dDevice, vertices, indices, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, strName, ObjectLayer::LAYER_SCENE);
+	return Quad;
+}
+
 CStaticMesh* GeometryMaker::MakeCircle( ID3D11Device* pd3dDevice, std::string strName)
 {
 	// 정점 정보 세팅
@@ -164,15 +193,6 @@ CSkyboxMesh* GeometryMaker::MakeSkyBox( ID3D11Device* pd3dDevice, std::string st
 	vertices[i++].m_textureUV = XMFLOAT2( 1.0f, 0.0f );
 	vertices[i].m_position = XMFLOAT3( -fx, -fx, -fx );	//3
 	vertices[i++].m_textureUV = XMFLOAT2( 0.0f, 0.0f );
-
-	//vertices[i].m_position = XMFLOAT3( -fx, -fx, +fx );
-	//vertices[i++].m_textureUV = XMFLOAT2( 0.0f, 0.0f );
-	//vertices[i].m_position = XMFLOAT3( +fx, -fx, +fx );
-	//vertices[i++].m_textureUV = XMFLOAT2( 1.0f, 0.0f );
-	//vertices[i].m_position = XMFLOAT3( +fx, -fx, -fx );
-	//vertices[i++].m_textureUV = XMFLOAT2( 1.0f, 1.0f );
-	//vertices[i].m_position = XMFLOAT3( -fx, -fx, -fx );
-	//vertices[i++].m_textureUV = XMFLOAT2( 0.0f, 1.0f );
 
 	// 인덱스 정보 세팅
 	std::vector<UINT> indices;

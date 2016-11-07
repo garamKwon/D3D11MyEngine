@@ -130,6 +130,7 @@ public:
 class CMesh : public CBaseObject
 {
 protected:
+
 	std::vector<UINT> m_svIndices;
 	// 인덱스버퍼 포맷
 	DXGI_FORMAT m_dxgiFormat;

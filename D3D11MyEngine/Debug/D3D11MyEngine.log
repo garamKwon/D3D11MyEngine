@@ -1,9 +1,16 @@
-﻿  SceneManager.cpp
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(14): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(44): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(51): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(69): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(83): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\scenemanager.cpp(97): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  Quad.cpp
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\quad.cpp(106): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\quad.cpp(107): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\quad.cpp(108): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\quad.cpp(109): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\quad.cpp(127): warning C4244: '인수': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  D3D11MyEngine.cpp
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\d3d11myengine.cpp(187): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(240): note: 'freopen' 선언을 참조하십시오.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\d3d11myengine.cpp(188): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(240): note: 'freopen' 선언을 참조하십시오.
+c:\users\garam\documents\visual studio 2015\projects\d3d11myengine\d3d11myengine\d3d11myengine.cpp(189): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(240): note: 'freopen' 선언을 참조하십시오.
+  코드를 생성하고 있습니다...
   D3D11MyEngine.vcxproj -> C:\Users\Garam\Documents\Visual Studio 2015\Projects\D3D11MyEngine\Debug\D3D11MyEngine.exe
   D3D11MyEngine.vcxproj -> C:\Users\Garam\Documents\Visual Studio 2015\Projects\D3D11MyEngine\Debug\D3D11MyEngine.pdb (Full PDB)

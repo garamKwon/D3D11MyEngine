@@ -394,8 +394,8 @@ CStaticMesh::~CStaticMesh( )
 	SAFE_RELEASE( m_pd3dTangentBuffer );
 	SAFE_RELEASE( m_pd3dBinormalBuffer );
 
-	SAFE_DELETE( m_pnVertexStrides );
-	SAFE_DELETE( m_pnVertexOffsets );
+	delete( m_pnVertexStrides );
+	delete( m_pnVertexOffsets );
 }
 
 std::vector<CStaticVertex> CStaticMesh::GetVertices( ) const
@@ -534,8 +534,8 @@ CAnimateMesh::~CAnimateMesh( )
 	SAFE_RELEASE( m_pd3dBinormalBuffer );
 	SAFE_RELEASE( m_pd3dBoneIdxBuffer );
 	SAFE_RELEASE( m_pd3dWeightBuffer );
-	SAFE_DELETE( m_pnVertexStrides );
-	SAFE_DELETE( m_pnVertexOffsets );
+	delete( m_pnVertexStrides );
+	delete( m_pnVertexOffsets );
 }
 	
 std::vector<CAnimateVertex> CAnimateMesh::GetVertices( ) const
@@ -674,8 +674,8 @@ CSkyboxMesh::~CSkyboxMesh( )
 	SAFE_RELEASE( m_pd3dTangentBuffer );
 	SAFE_RELEASE( m_pd3dBinormalBuffer );
 
-	SAFE_DELETE( m_pnVertexStrides );
-	SAFE_DELETE( m_pnVertexOffsets );
+	delete( m_pnVertexStrides );
+	delete( m_pnVertexOffsets );
 }
 std::vector<CStaticVertex> CSkyboxMesh::GetVertices( ) const
 {

@@ -19,6 +19,21 @@
     <Filter Include="Systems">
       <UniqueIdentifier>{de3c5fec-319b-47b5-95a8-0513f6fde54f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Particle">
+      <UniqueIdentifier>{03fed413-1d58-4949-9ec0-ba2047cebc59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Light">
+      <UniqueIdentifier>{75fc5dda-ff64-412a-91a3-81145139796f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\GameSystem">
+      <UniqueIdentifier>{b3c8b927-38b9-4121-9bb7-664a576e0683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Shading">
+      <UniqueIdentifier>{961b34ec-9b15-46fb-b8f5-188067692c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Objects">
+      <UniqueIdentifier>{b0b8d635-06f1-4c98-85f5-8554a6d0b0a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -35,45 +50,6 @@
     </ClInclude>
     <ClInclude Include="D3D11MyEngine.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="GameTimer.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Trigger.h">
-      <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="CollisionSystem.h">
       <Filter>Systems</Filter>
@@ -105,6 +81,51 @@
     <ClInclude Include="UISystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Classes\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Classes\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Classes\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Classes\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Classes\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Classes\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Classes\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Classes\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Classes\Shading</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Classes\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -112,45 +133,6 @@
     </ClCompile>
     <ClCompile Include="D3D11MyEngine.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="BoundingBox.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="GameTimer.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Trigger.cpp">
-      <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="CollisionSystem.cpp">
       <Filter>Systems</Filter>
@@ -181,6 +163,51 @@
     </ClCompile>
     <ClCompile Include="UISystem.cpp">
       <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Classes\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Classes\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Classes\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Classes\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Classes\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Classes\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Classes\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Classes\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Classes\Shading</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Classes\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

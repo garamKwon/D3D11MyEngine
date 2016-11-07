@@ -3,7 +3,7 @@
 #include "GameObject.h"
 
 // 텍스처 정보들을 가질 객체, CTexture는 객체가 가질 여러 개의 텍스처들을 모두 가지고 있다.
-class CTexture : CBaseObject
+class CTexture : public CBaseObject
 {
 private:
 	ID3D11ShaderResourceView *m_pd3dTextureSRV;

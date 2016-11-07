@@ -18,13 +18,7 @@ D3DEngine::D3DEngine( )
 
 D3DEngine::~D3DEngine( )
 {
-	SAFE_DELETE( m_pSceneManager );
-	SAFE_DELETE( m_pPickingSys );
-	SAFE_DELETE( m_pUISys );
-	SAFE_DELETE( m_pParticleSys );
-	SAFE_DELETE( m_pCollisionSys );
-	SAFE_DELETE( m_pFbxLoader );
-	SAFE_DELETE( m_pD3DLib );
+
 }
 
 void D3DEngine::Init( HINSTANCE hInstance, HWND hWnd, UINT nClientWidth, UINT nClientHeight )
@@ -47,15 +41,15 @@ void D3DEngine::Init( HINSTANCE hInstance, HWND hWnd, UINT nClientWidth, UINT nC
 
 void D3DEngine::Destroy( )
 {
-	SAFE_DELETE( m_pGameTimer );
-	SAFE_DELETE( m_pGeometryMaker );
-	SAFE_DELETE( m_pSceneManager );
-	SAFE_DELETE( m_pPickingSys );
-	SAFE_DELETE( m_pUISys );
-	SAFE_DELETE( m_pParticleSys );
-	SAFE_DELETE( m_pCollisionSys );
-	SAFE_DELETE( m_pFbxLoader );
-	SAFE_DELETE( m_pD3DLib );
+	delete( m_pGameTimer );
+	delete( m_pGeometryMaker );
+	delete( m_pSceneManager );
+	delete( m_pPickingSys );
+	delete( m_pUISys );
+	delete( m_pParticleSys );
+	delete( m_pCollisionSys );
+	delete( m_pFbxLoader );
+	delete( m_pD3DLib );
 }
 
 void D3DEngine::Render( )
@@ -67,6 +61,7 @@ void D3DEngine::Render( )
 
 	// ¾À¿¡ ÀÖ´Â °´Ã¼µé ·»´õ¸µ
 	m_pSceneManager->RenderScene( m_pD3DLib->GetDeviceContext() );
+	m_pParticleSys->Render(m_pD3DLib->GetDeviceContext(), m_pSceneManager->GetDebugCamera());
 
 	// ÇÃ¸®ÇÎ
 	m_pD3DLib->Present( 0, 0 );
@@ -79,7 +74,9 @@ void D3DEngine::FrameAdvance( )
 	m_pGameTimer->Tick( );
 
 	// SceneÀÇ °´Ã¼µé °»½Å
-	m_pSceneManager->UpdateScene( m_pGameTimer->GetTimeElapsed( ) );
+	float time = m_pGameTimer->GetTimeElapsed();
+	m_pSceneManager->UpdateScene(time);
+	m_pParticleSys->Update(time);
 }
 
 void D3DEngine::SetFrameBufferSize( int nWidth, int nHeight )
@@ -235,27 +232,33 @@ LRESULT CALLBACK D3DEngine::OnProcessingWindowMessage( HWND hWnd, UINT nMessageI
 
 CStaticMesh* D3DEngine::MakeCube( std::string szName, float fWidth, float fHeight, float fDepth )
 {
-	return m_pGeometryMaker->MakeCube( m_pD3DLib->GetDevice( ), szName, fWidth, fHeight, fDepth );
+	return  m_pGeometryMaker->MakeCube(m_pD3DLib->GetDevice(), szName, fWidth, fHeight, fDepth);
+}
+
+CStaticMesh* D3DEngine::MakeQuad(std::string szName, float fWidth, float fHeight)
+{
+	return m_pGeometryMaker->MakeQuad(m_pD3DLib->GetDevice(), szName, fWidth, fHeight);
 }
 
 CStaticMesh* D3DEngine::MakeCircle( std::string szName )
 {
-	return m_pGeometryMaker->MakeCircle( m_pD3DLib->GetDevice( ), szName );
+	return m_pGeometryMaker->MakeCircle(m_pD3DLib->GetDevice(), szName);
+	
 }
 
 CStaticMesh* D3DEngine::MakeCylinder( std::string szName )
 {
-	return m_pGeometryMaker->MakeCylinder( m_pD3DLib->GetDevice( ), szName );
+	return m_pGeometryMaker->MakeCylinder(m_pD3DLib->GetDevice(), szName);
 }
 
 CStaticMesh* D3DEngine::MakeCapsule( std::string szName )
 {
-	return m_pGeometryMaker->MakeCapsule( m_pD3DLib->GetDevice( ), szName );
+	return m_pGeometryMaker->MakeCapsule(m_pD3DLib->GetDevice(), szName);
 }
 
 CSkyboxMesh* D3DEngine::MakeSkybox( std::string szName, float fWidth, float fHeight, float fDepth )
 {
-	return m_pGeometryMaker->MakeSkyBox( m_pD3DLib->GetDevice( ), szName, fWidth, fHeight, fDepth );
+	return m_pGeometryMaker->MakeSkyBox(m_pD3DLib->GetDevice(), szName, fWidth, fHeight, fDepth);
 }
 
 CStaticMesh* D3DEngine::MakeStaticFbxMesh(std::string strName, const char* strFbxFileName)
@@ -271,4 +274,23 @@ CAnimateMesh* D3DEngine::MakeAnimateFbxMesh(std::string strName, const char* str
 CTexture* D3DEngine::ChangeTexture(std::string strObjName, TCHAR* strFileName, std::string strTexName, std::string strSrcName)
 {
 	return m_pSceneManager->GetCurrentScene()->GetGameObject(strObjName)->GetMaterial()->ChangeTexture(m_pD3DLib->GetDevice(), strTexName, strFileName, strSrcName);
+}
+
+CParticle* D3DEngine::AddParticle(std::string strName, CMesh* pMesh, int numParticles, XMFLOAT3 vStartPos, XMFLOAT3 vDir,
+	float fLivingTime, float fRadius, float fMaxSize, float fGravity, float fXSize, float fYSize, float fPower)
+{
+	ParticleInfo info;
+	info.m_fGravity = fGravity;
+	info.m_fLivingTime = fLivingTime;
+	info.m_fPower = fPower;
+	info.m_fXSize = fXSize;
+	info.m_fYSize = fYSize;
+	info.m_vDirection = vDir;
+
+	return m_pParticleSys->AddParticle( m_pD3DLib->GetDevice(), strName, pMesh, numParticles, info, vStartPos, vDir, fLivingTime, fRadius, fMaxSize);
+}
+
+void D3DEngine::StartParticle(std::string strName)
+{
+	m_pParticleSys->StartParticle(strName);
 }

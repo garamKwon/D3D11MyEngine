@@ -34,7 +34,7 @@
 #include <D3DX11.h>
 #include <D3Dcompiler.h>
 #include <xnamath.h>
-
+#include <random>
 #include <vector>
 
 #pragma comment(lib, "winmm.lib")
@@ -57,8 +57,8 @@
 #define SAFE_DELETE(x) \
    if(x != NULL)       \
                {       \
-	  delete x;		   \
-      x = NULL;        \
+	x->Release();	   \
+x = NULL;             \
                }
 #endif
 

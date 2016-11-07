@@ -1,4 +1,5 @@
 #pragma once
+#include <list>
 #include "D3DSetupLib.h"
 #include "FbxLoader.h"
 #include "CollisionSystem.h"
@@ -77,7 +78,8 @@ public:
 	int GetFrameBufferHeight( )const;
 
 	// 기하구조 생성
-	CStaticMesh* MakeCube( std::string szName, float fWidth = 5.0f, float fHeight = 5.0f, float fDepth = 5.0f );
+	CStaticMesh* MakeCube(std::string szName, float fWidth = 5.0f, float fHeight = 5.0f, float fDepth = 5.0f);
+	CStaticMesh* MakeQuad(std::string szName, float fWidth = 5.0f, float fHeight = 5.0f);
 	CStaticMesh* MakeCircle( std::string szName );
 	CStaticMesh* MakeCylinder( std::string szName );
 	CStaticMesh* MakeCapsule( std::string szName );
@@ -87,6 +89,11 @@ public:
 
 	// 머테리얼 관련
 	CTexture* ChangeTexture(std::string strObjName, TCHAR* strFileName, std::string strTexName, std::string strSrcName = "DiffuseTexture");
+
+	// 파티클 관련
+	CParticle* AddParticle(std::string strName, CMesh* pMesh, int numParticles = 100, XMFLOAT3 vStartPos = XMFLOAT3(0, 0, 0), XMFLOAT3 vDir = XMFLOAT3(0, 1.0f, 0.0),
+		float fLivingTime = 1.0f, float fRadius = 0.5f, float fMaxSize = 10.0f, float fGravity = 9.8f, float fXSize = 5.0f, float fYSize = 5.0f, float fPower = 50.0f);
+	void StartParticle(std::string strName);
 public:
 
 };

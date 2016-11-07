@@ -46,6 +46,23 @@ CBaseObject* CBaseObject::GetParentObject() const
 	return m_pParentObject;
 }
 
+void CBaseObject::PlusRef()
+{
+	m_nReference++;
+}
+
+void CBaseObject::MinusRef()
+{
+	m_nReference--;
+}
+
+void CBaseObject::Release()
+{
+	MinusRef();
+	if (m_nReference <= 0)
+		delete this;
+}
+
 CGameObject::CGameObject( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType ) : CBaseObject( strName, iLayer, iType )
 {
 	m_vpMesh.resize( 0 );
@@ -67,12 +84,15 @@ CGameObject::CGameObject( ID3D11Device* pd3dDevice, std::string strName, ObjectL
 	CTexture* tex = new CTexture(pd3dDevice, L"baseTexture.png", "DiffuseTexture", ObjectLayer::LAYER_SCENE);
 	textures.push_back(tex);
 
-	m_pMaterial = new CMaterial(pd3dDevice, textures);
+	m_pMaterial = new CMaterial(pd3dDevice, textures, "ObjectMaterial", ObjectLayer::LAYER_SCENE, ObjectType::TYPE_MATERIAL);
 }
 
 
 CGameObject::~CGameObject( )
 {
+	SAFE_DELETE(m_pMaterial);
+	for (int i = 0; i < m_nMeshCount; i++)
+		SAFE_DELETE(m_vpMesh[i]);
 }
 
 
@@ -244,7 +264,8 @@ void CGameObject::SetMesh( int idx, CMesh* pMesh )
 {
 	if (idx < m_nMeshCount)
 	{
-		SAFE_DELETE( m_vpMesh[idx] );
+		SAFE_DELETE(m_vpMesh[idx]);
+		pMesh->PlusRef();
 		m_vpMesh[idx] = pMesh;
 		m_vpMesh[idx]->SetParentObject(this);
 	}
@@ -253,6 +274,7 @@ void CGameObject::SetMesh( int idx, CMesh* pMesh )
 void CGameObject::SetMesh( CMesh* pMesh )
 {
 	m_vpMesh.push_back( pMesh );
+	pMesh->PlusRef();
 	pMesh->SetParentObject(this);
 	m_nMeshCount++;
 }
@@ -369,12 +391,12 @@ CSkyboxObject::CSkyboxObject( ID3D11Device* pd3dDevice, std::string strName, Obj
 	textures.push_back(up);
 	textures.push_back(down);
 
-	m_pMaterial = new CMaterial(pd3dDevice, textures);
+	m_pMaterial = new CMaterial(pd3dDevice, textures, "SkyBoxMaterial", ObjectLayer::LAYER_SCENE, ObjectType::TYPE_MATERIAL);
 }
 
 CSkyboxObject::~CSkyboxObject( )
 {
-
+	SAFE_DELETE(m_pMaterial);
 }
 
 int CSkyboxObject::Render( ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera )

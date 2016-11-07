@@ -50,21 +50,31 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	gMyEngine.CreateScene("Scene1");	
 	gMyEngine.GetCurrentScene()->SetContorller(new CController("controller"));
-	gMyEngine.SetDebugCamera(gMyEngine.CreateCamera("DebugCamera", ObjectLayer::LAYER_SCENE, XMFLOAT3(0, 0, -50)));
-	gMyEngine.CreateCamera("Camera", ObjectLayer::LAYER_SCENE, XMFLOAT3(0, 0, 50));
+	gMyEngine.SetDebugCamera(gMyEngine.CreateCamera("DebugCamera", ObjectLayer::LAYER_SCENE, XMFLOAT3(0, 0, -100)));
+	gMyEngine.CreateCamera("Camera", ObjectLayer::LAYER_SCENE, XMFLOAT3(0, 0, 0));
 
-//	CMesh* pMesh = gMyEngine.MakeCube("Cube", 5, 5, 5);
+	CMesh* pMesh = gMyEngine.MakeCube("Cube", 5, 5, 5);
 //	CMesh* pZero = gMyEngine.MakeCube("ZeroAxis", 1, 1, 1);
 	CMesh* pSkyBox = gMyEngine.MakeSkybox("Skybox");
-	CMesh* pfbxMesh = gMyEngine.MakeStaticFbxMesh("fbx", "res/model/Bad.FBX");
-	CMesh* pAnimateMesh = gMyEngine.MakeAnimateFbxMesh("Anim", "Hero_Sword_Animation.FBX");
+	CMesh* pBadMesh = gMyEngine.MakeStaticFbxMesh("fbx", "res/model/Bad.FBX");
+//	CMesh* pWallMesh = gMyEngine.MakeStaticFbxMesh("fbx", "res/model/Wall/Wall.FBX");
+//	CMesh* pWall01Mesh = gMyEngine.MakeStaticFbxMesh("fbx", "res/model/Wall/Wall01.FBX");
+//	CMesh* pAnimateMesh = gMyEngine.MakeAnimateFbxMesh("Anim", "Hero_Sword_Animation.FBX");
+	CMesh* pQuad = gMyEngine.MakeQuad("Quad", 5, 5);
 
-	//	gMyEngine.CreateObject( "Axis", ObjectLayer::LAYER_SCENE, pZero );
+	gMyEngine.AddParticle("Dust", pQuad, 10, XMFLOAT3(0,0,0), XMFLOAT3(0,1.0,0), 100.0f,0.5f,10.0f, 9.8f, 1.0f, 1.0f, 50.0f);
 	gMyEngine.CreateSkyboxObject("SkyBox", ObjectLayer::LAYER_SCENE, pSkyBox);
-	gMyEngine.CreateObject("Object1", ObjectLayer::LAYER_SCENE, pAnimateMesh, ObjectType::TYPE_OBJECT, XMFLOAT3(0, 0, 0));
-	gMyEngine.CreateObject("object2", ObjectLayer::LAYER_SCENE, pfbxMesh);
-	gMyEngine.ChangeTexture("object2", L"res/model/Bad_d.png", "DiffuseTexture");
-	gMyEngine.ChangeTexture("Object1", L"Hero_Sword_Texture.dds", "DiffuseTexture");
+	gMyEngine.CreateObject("Axis", ObjectLayer::LAYER_SCENE, pMesh, ObjectType::TYPE_OBJECT, XMFLOAT3(-100, 0, 0));
+//	gMyEngine.CreateObject("Object1", ObjectLayer::LAYER_SCENE, pAnimateMesh, ObjectType::TYPE_OBJECT, XMFLOAT3(100, 0, 0));
+//	gMyEngine.CreateObject("object2", ObjectLayer::LAYER_SCENE, pBadMesh);
+//	gMyEngine.CreateObject("Object3", ObjectLayer::LAYER_SCENE, pWallMesh, ObjectType::TYPE_OBJECT, XMFLOAT3(0, 0, 50));
+//	gMyEngine.CreateObject("Object4", ObjectLayer::LAYER_SCENE, pWall01Mesh, ObjectType::TYPE_OBJECT, XMFLOAT3(50, 0, 0));
+
+//	gMyEngine.ChangeTexture("object2", L"res/model/Bad_d.png", "DiffuseTexture");
+//	gMyEngine.ChangeTexture("Object3", L"res/model/Wall/WallDiffuse.png", "DIffuseTexture");
+//	gMyEngine.ChangeTexture("Object4", L"res/model/Wall/WallDiffuse.png", "DIffuseTexture");
+//	gMyEngine.ChangeTexture("Object1", L"Hero_Sword_Texture.dds", "DiffuseTexture");
+	
 
 	//	gMyEngine.CameraLookAtObject( "Camera", "Object1" );
 
@@ -215,6 +225,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 	case WM_KEYDOWN:
 	case WM_KEYUP:
+		gMyEngine.StartParticle("Dust");
 		gMyEngine.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

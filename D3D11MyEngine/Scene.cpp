@@ -37,7 +37,7 @@ CScene::~CScene( )
 		delete m_vpObjects[i];
 
 	SAFE_DELETE( m_pController );
-	SAFE_DELETE( m_pLights );
+	delete( m_pLights );
 	SAFE_RELEASE( m_pd3dcbLights );
 }
 
@@ -132,6 +132,7 @@ CGameObject* CScene::GetGameObject( std::string strObjName ) const
 		if (m_vpObjects[i]->GetName( ) == strObjName)
 			return m_vpObjects[i];
 	}
+	return nullptr;
 }
 
 CLight* CScene::GetLight( std::string strLightName ) const
@@ -336,9 +337,12 @@ void CScene::Update(float fTimeElapsed, CCamera* pCam)
 		// i+1을 시작위치로 하는 이유는 순차적으로 검사하기에 i 보다 적은 건 이미 체크했기 때문
 		for (int j = i+1; j < m_vpObjects.size(); j++)
 		{
-			if (m_vpObjects[i]->CheckOOBBIntersect(m_vpObjects[j]))
+			if (m_vpObjects[i]->GetType() != ObjectType::TYPE_SKYBOX)
 			{
-				//충돌
+				if (m_vpObjects[i]->CheckOOBBIntersect(m_vpObjects[j]))
+				{
+					//충돌
+				}
 			}
 		}
 	}

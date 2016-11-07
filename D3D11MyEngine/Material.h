@@ -10,7 +10,7 @@ struct MATERIAL
 };
 
 // 재질은 텍스처를 가지고 있으며 여러 관련 정보들을 가진다.
-class CMaterial
+class CMaterial : public CBaseObject
 {
 private:
 	// 텍스처를 여러 장 가질 수도 있다
@@ -27,13 +27,13 @@ public:
 	static UINT CB_MATERIAL_SLOT;
 
 public:
-	CMaterial( ID3D11Device* pd3dDevice );
-	CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures );
-	CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, MATERIAL& mat );
+	CMaterial( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType);
+	CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, std::string strName, ObjectLayer iLayer, ObjectType iType);
+	CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, MATERIAL& mat, std::string strName, ObjectLayer iLayer, ObjectType iType);
 	CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures,
-		XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive );
-	CMaterial( ID3D11Device* pd3dDevice, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive );
-	CMaterial( ID3D11Device* pd3dDevice, MATERIAL& mat );
+		XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive, std::string strName, ObjectLayer iLayer, ObjectType iType);
+	CMaterial( ID3D11Device* pd3dDevice, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive, std::string strName, ObjectLayer iLayer, ObjectType iType);
+	CMaterial( ID3D11Device* pd3dDevice, MATERIAL& mat, std::string strName, ObjectLayer iLayer, ObjectType iType);
 	~CMaterial( );
 
 	void SetTextures( std::vector<CTexture*> ppTextures );

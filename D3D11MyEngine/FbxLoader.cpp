@@ -266,7 +266,7 @@ void FbxLoader::GetInfluenceWeightAndBoneOffsets(FbxMesh *pMesh, std::vector<CAn
 			int *boneVertexIndices = cluster->GetControlPointIndices();					// 해당 본에 영향을 받는 정점들
 																						// 해당 본에 영향을 받는 모든 정점을 하나씩 가져옴	
 			int numBoneVertexIndices = cluster->GetControlPointIndicesCount();
-
+			
 			for (int i = 0; i < numBoneVertexIndices; i++)
 			{
 				float boneWeight = (float)boneVertexWeights[i];
@@ -279,24 +279,44 @@ void FbxLoader::GetInfluenceWeightAndBoneOffsets(FbxMesh *pMesh, std::vector<CAn
 					(*pVertices)[idx].m_boneIndices.x = (float)boneIdx;
 				}
 				// 가중치 중 x가 0이 아니고 y가 0이면 두번째 인덱스
-				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y == 0)
+				else if ((*pVertices)[idx].m_weights.x != 0 && (*pVertices)[idx].m_weights.y == 0)
 				{
 					(*pVertices)[idx].m_weights.y = boneWeight;
 					(*pVertices)[idx].m_boneIndices.y = (float)boneIdx;
 				}
 				// 가중치 중 x가 0이 아니고 y가 0이 아니고 z가 0이면 세번째 인덱스
-				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.z == 0)
+				else if ((*pVertices)[idx].m_weights.x != 0 && (*pVertices)[idx].m_weights.y != 0 && (*pVertices)[idx].m_weights.z == 0)
 				{
 					(*pVertices)[idx].m_weights.z = boneWeight;
 					(*pVertices)[idx].m_boneIndices.z = (float)boneIdx;
 				}
 				// 모두 0이 아니면 4번째 인덱스, 가중치는 1에서 xyz 빼면 나머지 구할 수 있음
-				else if ((*pVertices)[boneVertexIndices[i]].m_weights.x != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.y != 0 && (*pVertices)[boneVertexIndices[i]].m_weights.z != 0)
+				else if ((*pVertices)[idx].m_weights.x != 0 && (*pVertices)[idx].m_weights.y != 0 && (*pVertices)[idx].m_weights.z != 0)
 				{
 					(*pVertices)[idx].m_boneIndices.w = (float)boneIdx;
 				}
 			}
 		}	// end of bonecount for
+
+		// uv 중복 좌표의 가중치와 영향받는 본 추가
+		int vertexCount = pMesh->GetControlPointsCount();
+		for (int i = vertexCount; i < pVertices->size(); i++)
+		{
+			if ((*pVertices)[i].m_weights.x == 0)
+			{
+				for (int j = 0; j < vertexCount; j++)
+				{
+					if ((*pVertices)[i].m_position.x == (*pVertices)[j].m_position.x &&
+						(*pVertices)[i].m_position.y == (*pVertices)[j].m_position.y &&
+						(*pVertices)[i].m_position.z == (*pVertices)[j].m_position.z)
+					{
+						(*pVertices)[i].m_boneIndices = (*pVertices)[j].m_boneIndices;
+						(*pVertices)[i].m_weights = (*pVertices)[j].m_weights;
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -360,11 +380,7 @@ void FbxLoader::GetVerticesAndIndices(FbxMesh* pMesh, std::vector<CAnimateVertex
 			CAnimateVertex vertex;
 
 			int cp_index = pMesh->GetPolygonVertex(i, j);
-			pIndex->push_back(cp_index);
-
-			if ((*pVertex)[cp_index].m_position.x != -10000 && (*pVertex)[cp_index].m_position.y != -10000 && (*pVertex)[cp_index].m_position.z != -10000)
-				continue;
-
+		
 			//---------------------------------------------------------
 			// position
 			//---------------------------------------------------------
@@ -584,7 +600,19 @@ void FbxLoader::GetVerticesAndIndices(FbxMesh* pMesh, std::vector<CAnimateVertex
 //			}
 			++vertexID;
 
-			(*pVertex)[cp_index] = vertex;
+			if ((*pVertex)[cp_index].m_position.x == vertex.m_position.x &&
+				(*pVertex)[cp_index].m_position.y == vertex.m_position.y &&
+				(*pVertex)[cp_index].m_position.z == vertex.m_position.z &&
+				(*pVertex)[cp_index].m_textureUV.x != vertex.m_textureUV.x
+				&& (*pVertex)[cp_index].m_textureUV.y != vertex.m_textureUV.y )
+			{
+				cp_index = pVertex->size();
+				pVertex->push_back(vertex);
+			}
+			else
+				(*pVertex)[cp_index] = vertex;
+
+			pIndex->push_back(cp_index);
 		}
 	}
 }

@@ -7,8 +7,10 @@ class CTexture;
 class CCamera;
 
 enum class ObjectLayer{ LAYER_SCENE, LAYER_CONTROLLER };
-enum class ObjectType{ TYPE_DIRECTIONALLIGHT, TYPE_POINTLIGHT, TYPE_SPOTLIGHT, TYPE_STATIC_MESH, TYPE_ANIMATE_MESH,
-	TYPE_OBJECT, TYPE_TEXTURE, TYPE_MATERIAL, TYPE_SCENE, TYPE_CAMERA, TYPE_SKYBOX, TYPE_CONTROLLER, TYPE_TRIGGER 
+enum class ObjectType {
+	TYPE_DIRECTIONALLIGHT, TYPE_POINTLIGHT, TYPE_SPOTLIGHT, TYPE_STATIC_MESH, TYPE_ANIMATE_MESH,
+	TYPE_OBJECT, TYPE_TEXTURE, TYPE_MATERIAL, TYPE_SCENE, TYPE_CAMERA, TYPE_SKYBOX, TYPE_CONTROLLER, TYPE_TRIGGER,
+	TYPE_PARTICLE,
 };
 enum class ObjectState { STATE_IDLE, STATE_MOVE, STATE_DEATH, STATE_ATTACK, STATE_DAMAGED};
 
@@ -21,11 +23,13 @@ protected:
 	ObjectLayer m_iLayer;
 	std::string m_strName;
 	CBaseObject* m_pParentObject;
+	int m_nReference;
 
 public:
 	CBaseObject( std::string strName, ObjectLayer iLayer, ObjectType iType )
 		: m_iType(iType), m_iLayer(iLayer), m_strName(strName) {
 		m_pParentObject = nullptr;
+		m_nReference = 1;
 	};
 	virtual ~CBaseObject( ){};
 
@@ -38,6 +42,10 @@ public:
 
 	void SetParentObject(CBaseObject* pObject);
 	CBaseObject* GetParentObject() const;
+
+	void PlusRef();
+	void MinusRef();
+	void Release();
 };
 
 // 게임에서 기본적으로 사용되는 오브젝트, 기본적으로 움직임이 없는 고정형 객체

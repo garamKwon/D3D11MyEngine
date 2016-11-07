@@ -2,7 +2,7 @@
 #include "Material.h"
 
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice )
+CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
@@ -21,7 +21,7 @@ CMaterial::CMaterial( ID3D11Device* pd3dDevice )
 	m_Material.m_vEmissive = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
 }
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures )
+CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
@@ -40,7 +40,7 @@ CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTexture
 	m_Material.m_vEmissive = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
 }
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, MATERIAL& mat )
+CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, MATERIAL& mat, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
@@ -56,7 +56,7 @@ CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTexture
 	m_Material = mat;
 }
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive )
+CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTextures, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
@@ -75,7 +75,7 @@ CMaterial::CMaterial( ID3D11Device* pd3dDevice, std::vector<CTexture*> ppTexture
 	m_Material.m_vEmissive = m_vEmissive;
 }
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive )
+CMaterial::CMaterial( ID3D11Device* pd3dDevice, XMFLOAT4& vDiffuse, XMFLOAT4& vSpecular, XMFLOAT4& m_vAmbient, XMFLOAT4& m_vEmissive, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
@@ -94,7 +94,7 @@ CMaterial::CMaterial( ID3D11Device* pd3dDevice, XMFLOAT4& vDiffuse, XMFLOAT4& vS
 	m_Material.m_vEmissive = m_vEmissive;
 }
 
-CMaterial::CMaterial( ID3D11Device* pd3dDevice, MATERIAL& mat )
+CMaterial::CMaterial(ID3D11Device* pd3dDevice, MATERIAL& mat, std::string strName, ObjectLayer iLayer, ObjectType iType) : CBaseObject(strName, iLayer, iType)
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory( &d3dBufferDesc, sizeof( D3D11_BUFFER_DESC ) );

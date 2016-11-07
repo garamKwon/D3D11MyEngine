@@ -10,6 +10,7 @@ public:
 	~GeometryMaker( );
 
 	CStaticMesh* MakeCube( ID3D11Device* pd3dDevice, std::string strName, float fWidth = 5.0f, float fHeight = 5.0f, float fDepth = 5.0f );
+	CStaticMesh* MakeQuad(ID3D11Device* pd3dDevice, std::string strName, float fWidth = 5.0f, float fHeight = 5.0f);
 	CStaticMesh* MakeCircle( ID3D11Device* pd3dDevice, std::string strName);
 	CStaticMesh* MakeCylinder( ID3D11Device* pd3dDevice, std::string strName);
 	CStaticMesh* MakeCapsule( ID3D11Device* pd3dDevice, std::string strName);

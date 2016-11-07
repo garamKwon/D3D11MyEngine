@@ -14,7 +14,8 @@ SceneManager::~SceneManager( )
 	for (int i = 0; i < m_vScenes.size( ); i++)
 	{
 		if (m_vScenes[i])
-			SAFE_DELETE( m_vScenes[i] );
+			//	SAFE_DELETE( m_vScenes[i] );
+			delete m_vScenes[i];
 	}
 	m_vScenes.clear( );
 }
